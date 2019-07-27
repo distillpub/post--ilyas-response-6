@@ -1,0 +1,340 @@
+<!doctype html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://distill.pub/template.v2.js"></script>
+    <style>
+        .subgrid {
+	grid-column: screen;
+	display: grid;
+	grid-template-columns: inherit;
+	grid-template-rows: inherit;
+	grid-column-gap: inherit;
+	grid-row-gap: inherit;
+}
+
+d-figure.base-grid {
+	grid-column: screen;
+	background: hsl(0, 0%, 97%);
+	padding: 20px 0;
+	border-top: 1px solid rgba(0, 0, 0, 0.1);
+	border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+d-figure {
+	margin-bottom: 1em;
+	position: relative;
+}
+
+d-figure > figure {
+	margin-top: 0;
+	margin-bottom: 0;
+}
+
+.shaded-figure {
+	background-color: hsl(0, 0%, 97%);
+	border-top: 1px solid hsla(0, 0%, 0%, 0.1);
+	border-bottom: 1px solid hsla(0, 0%, 0%, 0.1);
+	padding: 30px 0;
+}
+
+.pointer {
+	position: absolute;
+	width: 26px;
+	height: 26px;
+	top: 26px;
+	left: -48px;
+}
+
+a.figure-number,
+a.section-number {
+	border-bottom-color: hsla(206, 90%, 20%, 0.3);
+	text-transform: uppercase;
+	font-size: 0.85em;
+	color: hsla(206, 90%, 20%, 0.7);
+}
+
+a.figure-number::before {
+	content: "Figure ";
+}
+
+
+
+#rebuttal,
+#response-info {
+	margin: 1em 0;
+	background-color: hsl(128, 50%, 97%);
+	border-left: solid hsl(129, 50%, 25%) 3px;
+	padding: 1em;
+	/* border-radius: 0.25em; */
+}
+
+#rebuttal .rebuttal-info {
+	color: hsl(129, 50%, 15%);
+	font-style: italic;
+	/* background-color: hsl(128, 50%, 90%); */
+	/* border: 1px solid hsl(128, 25%, 85%); */
+	/* padding: 0.5em; */
+	margin-bottom: 0.5em;
+	/* border-radius: 0.25em; */
+}
+
+#rebuttal figure {
+	background: white;
+	padding: 1em;
+	border-radius: 1em;
+}
+
+    </style>
+</head>
+
+<body>
+
+    <d-front-matter>
+        <script type="text/json">{
+  "title": "Learning from Incorrectly Labeled Data",
+  "description": "Section 3.2 of Ilyas et al. (2019) shows that training a model on only adversarial errors leads to non-trivial generalization on the original test set. We show that these experiments are a specific case of learning from errors.",
+  "password": "robustness",
+  "authors": [
+    {
+      "author": "Eric Wallace",
+      "authorURL": "http://www.ericswallace.com/",
+      "affiliation": "UC Berkeley",
+      "affiliationURL": "https://www.berkeley.edu/"
+    }
+  ],
+  "katex": {
+    "delimiters": [
+      {
+        "left": "$",
+        "right": "$",
+        "display": false
+      },
+      {
+        "left": "$$",
+        "right": "$$",
+        "display": true
+      }
+    ]
+  }
+  }</script>
+    </d-front-matter>
+
+    <d-title></d-title>
+
+    <d-article>
+
+        <section id="response-info"><em>
+                This article is part of a collection of responses to Ilyas et al. <d-cite key="ilyas2019adversarial">
+                </d-cite> paper "Adversarial
+                examples are not bugs, they are features". You can learn more about this process in this editorial
+                explanation. The author's rebuttal to this response is reproduced in context at the end of this article.
+                If
+                you want
+                to cite the rebuttal, please cite the linked collection of response rebuttals.</em>
+        </section>
+
+        <p>
+            Section 3.2 of Ilyas et al. (2019) shows that training a model on only adversarial errors leads to
+            non-trivial generalization on the original test set. We show that these experiments are a specific case of
+            learning from errors. We start with a counterintuitive result--we take a completely mislabeled training set
+            (without modifying the inputs) and use it to train a model that generalizes to the original test set. We
+            then show that this result, and the results of Ilyas et al. (2019), are a special case of model
+            distillation. In particular, since the incorrect labels are generated using a trained model, information
+            about the trained model is being “leaked” into the dataset.
+            We begin with the following question: what if we took the images in the training set (without any
+            adversarial perturbations) and mislabeled them? Since the inputs are unmodified and mislabeled, intuition
+            says that a model trained on this dataset should not generalize to the correctly-labeled test set.
+            Nevertheless, we show that this intuition fails--a model <i>can</i> generalize.
+            We first train a ResNet-18 on the CIFAR-10 training set for two epochs. The model reaches a training
+            accuracy of 62.5% and a test accuracy of 63.1%. Next, we run the model on all of the 50,000 training data
+            points and relabel them according to the model's predictions. Then, we filter out <i>all the correct
+                predictions</i>. We are now left with an incorrectly labeled training set of size 18,768. We show four
+            examples on the left of the Figure below:
+        </p>
+
+        <figure id="figure-1">
+            <img src="images/image1.png">
+            <figcaption>
+                <a href="#figure-1" class="figure-number">1</a>
+            </figcaption>
+        </figure>
+
+        <p>
+            We then randomly initialize a new ResNet-18 and train it only on this mislabeled dataset. We train for 50
+            epochs and reach an accuracy of 49.7% on the <i>original</i> test set. The new model has only ever seen
+            incorrectly labeled, unperturbed images but can still non-trivially generalize.
+        </p>
+
+        <h2>This is Model Distillation Using Incorrect Predictions</h2>
+
+        <p>
+            How can this model and the models in Ilyas et al. (2019) generalize without seeing any correctly labeled
+            data? Here, we show that since the incorrect labels are generated using a trained model, information is
+            being “leaked” about that trained model into the mislabeled examples. In particular, this an indirect form
+            of model distillation<d-cite key="hinton2015distilling"></d-cite>--training on this dataset allows a new
+            model to somewhat recover the features of the original model.
+        </p>
+
+        <p>
+            We first illustrate this distillation phenomenon using a two-dimensional problem. Then, we explore other
+            peculiar forms of distillation for neural networks---we transfer knowledge despite the inputs being from
+            another task.
+        </p>
+
+        <h3>Two-dimensional Illustration of Model Distillation</h3>
+
+        <p>
+            We construct a dataset of adversarial examples using a two-dimensional binary classification problem. We
+            generate 32 random two-dimensional data points in $[0,1]^2$ and assign each point a random binary label. We
+            then train a small feed-forward neural network on these examples, predicting 32/32 of the examples correctly
+            (panel (a) in the Figure below).
+        </p>
+
+        <figure id="figure-2">
+            <img src="images/image2.png">
+            <figcaption>
+                <a href="#figure-2" class="figure-number">2</a>
+            </figcaption>
+        </figure>
+
+        <p>
+            Next, we create adversarial examples for the original model using an $l_{\infty}$ ball of radius
+            $\epsilon=0.12$. In panel (a) of the Figure above, we display the $\epsilon$-ball around each training
+            point. In panel (b), we show the adversarial examples which cause the model to change its prediction (from
+            correct to incorrect). We train a new feed-forward neural network on this dataset, resulting in the model in
+            panel (c).
+        </p>
+
+        <p>
+            Although this new model has never seen a correctly labeled example, it is able to perform non-trivially on
+            the original dataset, predicting $23/32$ of the inputs correctly (panel (d) in the Figure). The new model's
+            decision boundary loosely matches the original model's decision boundary, i.e., the original model has been
+            somewhat distilled after training on its adversarial examples. This two-dimensional problem presents an
+            illustrative version of the intriguing result that distillation can be performed using incorrect
+            predictions.
+
+        </p>
+
+        <h3>
+            Other Peculiar Forms of Distillation
+        </h3>
+
+        <p>
+            Our experiments show that we can distill models using mislabeled examples. In what other peculiar ways can
+            we learn about the original model? Can we use only <i>out-of-domain</i> data?
+        </p>
+
+        <p>
+            We train a simple CNN model on MNIST, reaching 99.1% accuracy. We then run this model on the FashionMNIST
+            training set and save its argmax predictions. The resulting dataset is nonsensical to humans—a "dress" is
+            labeled as an "8".
+        </p>
+
+        <figure id="figure-3">
+            <img src="images/image3.png">
+            <figcaption>
+                <a href="#figure-3" class="figure-number">3</a>
+            </figcaption>
+        </figure>
+
+        <p>
+            We then initialize a new CNN model and train it on this mislabeled FashionMNIST data. The resulting model
+            reaches 91.04% accuracy on the MNIST test set. Furthermore, if we normalize the FashionMNIST images using
+            the mean and variance statistics for MNIST, the model reaches 94.5% accuracy on the MNIST test set. This is
+            another instance of recovering a functionally similar model to the original despite the new model only
+            training on erroneous predictions.
+        </p>
+
+        <h3>
+            Summary
+        </h3>
+
+        <p>
+            These results show that training a model using mislabeled adversarial examples is a special case of learning
+            from prediction errors. In other words, the perturbations added to adversarial examples in Section 3.2 of
+            Ilyas et al. (2019) are not necessary to enable learning.
+        </p>
+
+        <section id="rebuttal">
+            <div class="rebuttal-info">The original paper's authors' rebuttal is shown here in context. If you want
+                    to cite this rebuttal, please cite the linked collection of response rebuttals.</div>
+            <b>Response
+                Summary</b>: Note that since our experiments work across architectures,
+            “distillation” in weight space does not occur. The only distillation that can
+            arise is “feature space” distillation, which is actually exactly our hypothesis.
+            In particular, feature-space distillation would not work in <a href="#world1">
+                World 1</a>&mdash;if the
+            adversarial examples we generated did not exploit useful features, we should not
+            have been able to “distill” a useful model from them. (In fact, one might think
+            of normal model training as just “feature distillation” of the humans that
+            labeled the dataset.) Furthermore, the hypothesis that all we need is enough
+            model-consistent points in order to recover a model, seems to be disproven by
+            Preetum’s <a href="#PreetumResponse"> “bugs-only dataset”</a>
+            and other (e.g. <d-cite key="milli2018model"></d-cite>) settings. </p>
+
+            <p><b>Response</b>: Since our experiments work across architectures,
+                "distillation" in weight space cannot arise. Thus, from what we understand, the
+                "distillation" hypothesis suggested here is referring to "feature distillation"
+                (i.e. getting models which use the same features as the original), which is
+                actually precisely our hypothesis too. Notably, this feature distillation would
+                not be possible if adversarial examples did not rely on "flipping" features that
+                are good for classification (see <a href="#world1">World 1</a> and
+                <a href="#world2">World 2</a>)—the distilled
+                model would only use features that generalize poorly, and would thus generalize
+                poorly itself. </p>
+
+            <p> Moreover, we would argue that in the experiments presented (learning from
+                mislabeled data), the same kind of distillation is happening. For instance, a
+                moderately accurate model might associate "green background" with "frog" thus
+                labeling "green" images as "frogs" (e.g., the horse in the comment's figure).
+                Training a new model on this dataset will thus associate "green" with "frog"
+                achieving non-trivial accuracy on the test set (similarly for learning MNIST
+                from Fashion-MNIST). This corresponds exactly to learning features from labels,
+                similar to how deep networks "distill" a good decision boundary from human
+                annotators. In fact, we find these experiments a very interesting illustration
+                of feature distillation that complements our findings. </p>
+
+            <p> We also note that the analogy to logistic regression here is only possible
+                due to the low VC-dimension of linear classifiers (namely, these classifiers
+                have dimension d). In particular, given any classifier with VC-dimension k, we
+                need at least k points to fully specify the classifier. Conversely, neural
+                networks have been shown to have extremely large VC-dimension (in particular,
+                bigger than the size of the training set <d-cite key="zhang2016understanding"></d-cite>). So even though
+                labelling d+1 random
+                points model-consistently is sufficient to recover a linear model, it is not
+                necessarily sufficient to recover a deep neural network. For instance, Milli et
+                al. <d-cite key="milli2018model"></d-cite> are not able to reconstruct a ResNet-18
+                using only its predictions on random Gaussian inputs. (Note that we are using a
+                ResNet-50 in our experiments.) </p>
+
+            <p> Finally, it seems that the model proposed in this response is conclusively
+                disproved by the experiment done by Preetum (see <a href="#PreetumResponse"> LINK</a>). In particular,
+                Preetum is able to design a
+                dataset where training on mislabeled inputs <i>that are model-consistent</i>
+                does not at all recover the decision boundary of the original model. The “model
+                distillation” perspective raised here is unable to distinguish between the
+                dataset created by Preetum below, and those created with standard PGD (as in our
+                $\widehat{\mathcal{D}}_{det}$ and $\widehat{\mathcal{D}}_{rand}$ datasets).
+            </p>
+        </section>
+
+    </d-article>
+
+
+
+    <d-appendix>
+        <h3>Backlink</h3>
+        <p>
+            Probablhy will go here? Maybe also on top?
+        </p>
+
+        <d-footnote-list></d-footnote-list>
+        <d-citation-list></d-citation-list>
+    </d-appendix>
+
+    <!-- bibliography will be inlined during Distill pipeline's pre-rendering -->
+    <d-bibliography src="bibliography.bib"></d-bibliography>
+
+<script type="text/javascript" src="index.bundle.js"></script></body>
