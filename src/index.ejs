@@ -44,14 +44,10 @@
 
     <d-article>
 
-        <section id="response-info"><em>
-                This article is part of a collection of responses to Ilyas et al. <d-cite key="ilyas2019adversarial">
-                </d-cite> paper "Adversarial
-                examples are not bugs, they are features". You can learn more about this process in this editorial
-                explanation. The author's rebuttal to this response is reproduced in context at the end of this article.
-                If
-                you want
-                to cite the rebuttal, please cite the linked collection of response rebuttals.</em>
+        <section class="response-info">
+            This article is part of a discussion of Ilyas et al. <d-cite key="ilyas2019adversarial"></d-cite> paper
+            <em>"Adversarial examples are not bugs, they are features"</em>. You can learn more in the main
+            <a href="/2019/advex-bugs-responses/">discussion article</a>.
         </section>
 
         <p>
@@ -176,31 +172,37 @@
             Ilyas et al. (2019) are not necessary to enable learning.
         </p>
 
+
+        <div class="response-info">
+            Ilyas, et. al.'s rebuttal is shown here in context. To cite this rebuttal, please cite their
+            <a href="/2019/advex-bugs-responses/rebuttal/#citation">collection of response rebuttals</a>.
+        </div>
+
         <section id="rebuttal">
-            <div class="rebuttal-info">The original paper's authors' rebuttal is shown here in context. If you want
-                to cite this rebuttal, please cite the linked collection of response rebuttals.</div>
+
             <b>Response
-                Summary</b>: Note that since our experiments work across architectures,
+                Summary</b>: Note that since our experiments work across different architectures,
             “distillation” in weight space does not occur. The only distillation that can
             arise is “feature space” distillation, which is actually exactly our hypothesis.
-            In particular, feature-space distillation would not work in <a href="#world1">
+            In particular, feature-space distillation would not work in <a
+                href="/2019/advex-bugs-responses/rebuttal/#world1">
                 World 1</a>&mdash;if the
             adversarial examples we generated did not exploit useful features, we should not
             have been able to “distill” a useful model from them. (In fact, one might think
             of normal model training as just “feature distillation” of the humans that
             labeled the dataset.) Furthermore, the hypothesis that all we need is enough
             model-consistent points in order to recover a model, seems to be disproven by
-            Preetum’s <a href="#PreetumResponse"> “bugs-only dataset”</a>
+            Preetum’s <a href="/2019/advex-bugs-responses/response-5">“bugs-only dataset”</a>
             and other (e.g. <d-cite key="milli2018model"></d-cite>) settings. </p>
 
-            <p><b>Response</b>: Since our experiments work across architectures,
-                "distillation" in weight space cannot arise. Thus, from what we understand, the
-                "distillation" hypothesis suggested here is referring to "feature distillation"
+            <p><b>Response</b>: Since our experiments work across different architectures,
+                “distillation” in weight space cannot arise. Thus, from what we understand, the
+                “distillation” hypothesis suggested here is referring to “feature distillation”
                 (i.e. getting models which use the same features as the original), which is
                 actually precisely our hypothesis too. Notably, this feature distillation would
-                not be possible if adversarial examples did not rely on "flipping" features that
-                are good for classification (see <a href="#world1">World 1</a> and
-                <a href="#world2">World 2</a>)—the distilled
+                not be possible if adversarial examples did not rely on “flipping” features that
+                are good for classification (see <a href="/2019/advex-bugs-responses/rebuttal/#world1">World 1</a> and
+                <a href="/2019/advex-bugs-responses/rebuttal/#world2">World 2</a>)—in that case, the distilled
                 model would only use features that generalize poorly, and would thus generalize
                 poorly itself. </p>
 
@@ -209,34 +211,42 @@
                 moderately accurate model might associate "green background" with "frog" thus
                 labeling "green" images as "frogs" (e.g., the horse in the comment's figure).
                 Training a new model on this dataset will thus associate "green" with "frog"
-                achieving non-trivial accuracy on the test set (similarly for learning MNIST
-                from Fashion-MNIST). This corresponds exactly to learning features from labels,
-                similar to how deep networks "distill" a good decision boundary from human
-                annotators. In fact, we find these experiments a very interesting illustration
-                of feature distillation that complements our findings. </p>
+                achieving non-trivial accuracy on the test set (similarly for the "learning MNIST
+                from Fashion-MNIST" experiment in the comment). This corresponds exactly to
+                learning features from labels, akin to how deep networks "distill" a good
+                decision boundary from human annotators. In fact, we find these experiments
+                a very interesting illustration of feature distillation that complements
+                our findings. </p>
 
-            <p> We also note that the analogy to logistic regression here is only possible
+            <p> We also note that an analogy to logistic regression here is only possible
                 due to the low VC-dimension of linear classifiers (namely, these classifiers
-                have dimension d). In particular, given any classifier with VC-dimension k, we
-                need at least k points to fully specify the classifier. Conversely, neural
+                have dimension $d$). In particular, given any classifier with VC-dimension
+                $k$, we need at least $k$ points to fully specify the classifier. Conversely, neural
                 networks have been shown to have extremely large VC-dimension (in particular,
                 bigger than the size of the training set <d-cite key="zhang2016understanding"></d-cite>). So even though
-                labelling d+1 random
+                labelling $d+1$ random
                 points model-consistently is sufficient to recover a linear model, it is not
                 necessarily sufficient to recover a deep neural network. For instance, Milli et
                 al. <d-cite key="milli2018model"></d-cite> are not able to reconstruct a ResNet-18
                 using only its predictions on random Gaussian inputs. (Note that we are using a
                 ResNet-50 in our experiments.) </p>
 
-            <p> Finally, it seems that the model proposed in this response is conclusively
-                disproved by the experiment done by Preetum (see <a href="#PreetumResponse"> LINK</a>). In particular,
-                Preetum is able to design a
-                dataset where training on mislabeled inputs <i>that are model-consistent</i>
-                does not at all recover the decision boundary of the original model. The “model
-                distillation” perspective raised here is unable to distinguish between the
-                dataset created by Preetum below, and those created with standard PGD (as in our
-                $\widehat{\mathcal{D}}_{det}$ and $\widehat{\mathcal{D}}_{rand}$ datasets).
+            <p> Finally, it seems that the only potentially problematic explanation for
+                our experiments (namely, that enough model-consistent points can recover a
+                classifier) is <a href="/2019/advex-bugs-responses/response-5">disproved by Preetum's experiment</a>.
+                In particular, Preetum is able to design a
+                dataset where training on mislabeled inputs <em>that are model-consistent</em>
+                does not at all recover the decision boundary of the original model. More
+                generally, the “model distillation” perspective raised here is unable to
+                distinguish between the dataset created by Preetum below, and those created
+                with standard PGD (as in our $\widehat{\mathcal{D}}_{det}$ and
+                $\widehat{\mathcal{D}}_{rand}$ datasets).
             </p>
+        </section>
+
+        <section class="response-info">
+            You can find more responses in the main <a href="/2019/advex-bugs-responses/">discussion
+                article</a>.
         </section>
 
     </d-article>
