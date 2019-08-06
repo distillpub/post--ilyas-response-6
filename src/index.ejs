@@ -44,11 +44,7 @@
 
     <d-article>
 
-        <section class="response-info">
-            This article is part of a discussion of Ilyas et al. <d-cite key="ilyas2019adversarial"></d-cite> paper
-            <em>"Adversarial examples are not bugs, they are features"</em>. You can learn more in the main
-            <a href="/2019/advex-bugs-responses/">discussion article</a>.
-        </section>
+        <%= require("raw-loader!../../shared/header-info.htmlt") %>
 
         <p>
             Section 3.2 of Ilyas et al. (2019) shows that training a model on only adversarial errors leads to
@@ -173,10 +169,7 @@
         </p>
 
 
-        <div class="response-info">
-            Ilyas, et. al.'s rebuttal is shown here in context. To cite this rebuttal, please cite their
-            <a href="/2019/advex-bugs-responses/rebuttal/#citation">collection of response rebuttals</a>.
-        </div>
+        <%= require("raw-loader!../../shared/comment-header-info.htmlt") %>
 
         <section id="rebuttal">
 
@@ -185,14 +178,14 @@
             “distillation” in weight space does not occur. The only distillation that can
             arise is “feature space” distillation, which is actually exactly our hypothesis.
             In particular, feature-space distillation would not work in <a
-                href="/2019/advex-bugs-responses/rebuttal/#world1">
+                href="/2019/advex-bugs-discussion/rebuttal/#world1">
                 World 1</a>&mdash;if the
             adversarial examples we generated did not exploit useful features, we should not
             have been able to “distill” a useful model from them. (In fact, one might think
             of normal model training as just “feature distillation” of the humans that
             labeled the dataset.) Furthermore, the hypothesis that all we need is enough
             model-consistent points in order to recover a model, seems to be disproven by
-            Preetum’s <a href="/2019/advex-bugs-responses/response-5">“bugs-only dataset”</a>
+            Preetum’s <a href="/2019/advex-bugs-discussion/response-5">“bugs-only dataset”</a>
             and other (e.g. <d-cite key="milli2018model"></d-cite>) settings. </p>
 
             <p><b>Response</b>: Since our experiments work across different architectures,
@@ -201,8 +194,8 @@
                 (i.e. getting models which use the same features as the original), which is
                 actually precisely our hypothesis too. Notably, this feature distillation would
                 not be possible if adversarial examples did not rely on “flipping” features that
-                are good for classification (see <a href="/2019/advex-bugs-responses/rebuttal/#world1">World 1</a> and
-                <a href="/2019/advex-bugs-responses/rebuttal/#world2">World 2</a>)—in that case, the distilled
+                are good for classification (see <a href="/2019/advex-bugs-discussion/rebuttal/#world1">World 1</a> and
+                <a href="/2019/advex-bugs-discussion/rebuttal/#world2">World 2</a>)—in that case, the distilled
                 model would only use features that generalize poorly, and would thus generalize
                 poorly itself. </p>
 
@@ -233,7 +226,7 @@
 
             <p> Finally, it seems that the only potentially problematic explanation for
                 our experiments (namely, that enough model-consistent points can recover a
-                classifier) is <a href="/2019/advex-bugs-responses/response-5">disproved by Preetum's experiment</a>.
+                classifier) is <a href="/2019/advex-bugs-discussion/response-5">disproved by Preetum's experiment</a>.
                 In particular, Preetum is able to design a
                 dataset where training on mislabeled inputs <em>that are model-consistent</em>
                 does not at all recover the decision boundary of the original model. More
@@ -244,10 +237,7 @@
             </p>
         </section>
 
-        <section class="response-info">
-            You can find more responses in the main <a href="/2019/advex-bugs-responses/">discussion
-                article</a>.
-        </section>
+        <%= require("raw-loader!../../shared/comment-footer-info.htmlt") %>
 
     </d-article>
 

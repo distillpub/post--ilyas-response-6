@@ -123,11 +123,85 @@ a.figure-number::before {
 
     <d-article>
 
-        <section class="response-info">
-            This article is part of a discussion of Ilyas et al. <d-cite key="ilyas2019adversarial"></d-cite> paper
-            <em>"Adversarial examples are not bugs, they are features"</em>. You can learn more in the main
-            <a href="/2019/advex-bugs-responses/">discussion article</a>.
-        </section>
+        <style>
+    #rebuttal,
+    .comment-info {
+        background-color: hsl(54, 78%, 96%);
+        border-left: solid hsl(54, 33%, 67%) 1px;
+        padding: 1em;
+        color: hsla(0, 0%, 0%, 0.67);
+    }
+
+    #header-info {
+        margin-top: 0;
+        margin-bottom: 1.5rem;
+        display: grid;
+        grid-template-columns: 65px max-content 1fr;
+        grid-template-areas:
+            "icon explanation explanation"
+            "icon back comment";
+        grid-column-gap: 1.5em;
+    }
+
+    #header-info .icon-multiple-pages {
+        grid-area: icon;
+        padding: 0.5em;
+        content: url(images/multiple-pages.svg);
+    }
+
+    #header-info .explanation {
+        grid-area: explanation;
+        font-size: 85%;
+        color: hsl(0, 0%, 0.33);
+    }
+
+    #header-info .back {
+        grid-area: back;
+    }
+
+    #header-info .back::before {
+
+        content: "←";
+        margin-right: 0.5em;
+    }
+
+    #header-info .comment {
+        grid-area: comment;
+        scroll-behavior: smooth;
+    }
+
+    #header-info .comment::before {
+        content: "↓";
+        margin-right: 0.5em;
+    }
+
+    #header-info a.back,
+    #header-info a.comment {
+        font-size: 80%;
+        font-weight: 600;
+        border-bottom: none;
+        text-transform: uppercase;
+        color: #2e6db7;
+        display: block;
+        margin-top: 0.25em;
+        letter-spacing: 0.25px;
+    }
+</style>
+
+<section id="header-info" class="comment-info">
+    <div class="icon-multiple-pages"></div>
+    <p class="explanation">
+        This article is part of a discussion of Ilyas et al. paper
+        <em>"Adversarial examples are not bugs, they are features".</em>
+        You can learn more in the
+        <a href="/2019/advex-bugs-discussion/">
+            main discussion article
+        </a>.
+    </p>
+    <a class="back" href="/2019/advex-bugs-discussion/#comments">Other Comments</a>
+    <a class="comment" href="#rebuttal">Comment by Ilyas et al.</a>
+</section>
+
 
         <p>
             Section 3.2 of Ilyas et al. (2019) shows that training a model on only adversarial errors leads to
@@ -252,10 +326,11 @@ a.figure-number::before {
         </p>
 
 
-        <div class="response-info">
-            Ilyas, et. al.'s rebuttal is shown here in context. To cite this rebuttal, please cite their
-            <a href="/2019/advex-bugs-responses/rebuttal/#citation">collection of response rebuttals</a>.
-        </div>
+        <div class="comment-info">
+    To cite Ilyas et al.'s response, please cite their
+    <a href="/2019/advex-bugs-responses/original-authors/#citation">collection of responses</a>.
+</div>
+
 
         <section id="rebuttal">
 
@@ -264,14 +339,14 @@ a.figure-number::before {
             “distillation” in weight space does not occur. The only distillation that can
             arise is “feature space” distillation, which is actually exactly our hypothesis.
             In particular, feature-space distillation would not work in <a
-                href="/2019/advex-bugs-responses/rebuttal/#world1">
+                href="/2019/advex-bugs-discussion/rebuttal/#world1">
                 World 1</a>&mdash;if the
             adversarial examples we generated did not exploit useful features, we should not
             have been able to “distill” a useful model from them. (In fact, one might think
             of normal model training as just “feature distillation” of the humans that
             labeled the dataset.) Furthermore, the hypothesis that all we need is enough
             model-consistent points in order to recover a model, seems to be disproven by
-            Preetum’s <a href="/2019/advex-bugs-responses/response-5">“bugs-only dataset”</a>
+            Preetum’s <a href="/2019/advex-bugs-discussion/response-5">“bugs-only dataset”</a>
             and other (e.g. <d-cite key="milli2018model"></d-cite>) settings. </p>
 
             <p><b>Response</b>: Since our experiments work across different architectures,
@@ -280,8 +355,8 @@ a.figure-number::before {
                 (i.e. getting models which use the same features as the original), which is
                 actually precisely our hypothesis too. Notably, this feature distillation would
                 not be possible if adversarial examples did not rely on “flipping” features that
-                are good for classification (see <a href="/2019/advex-bugs-responses/rebuttal/#world1">World 1</a> and
-                <a href="/2019/advex-bugs-responses/rebuttal/#world2">World 2</a>)—in that case, the distilled
+                are good for classification (see <a href="/2019/advex-bugs-discussion/rebuttal/#world1">World 1</a> and
+                <a href="/2019/advex-bugs-discussion/rebuttal/#world2">World 2</a>)—in that case, the distilled
                 model would only use features that generalize poorly, and would thus generalize
                 poorly itself. </p>
 
@@ -312,7 +387,7 @@ a.figure-number::before {
 
             <p> Finally, it seems that the only potentially problematic explanation for
                 our experiments (namely, that enough model-consistent points can recover a
-                classifier) is <a href="/2019/advex-bugs-responses/response-5">disproved by Preetum's experiment</a>.
+                classifier) is <a href="/2019/advex-bugs-discussion/response-5">disproved by Preetum's experiment</a>.
                 In particular, Preetum is able to design a
                 dataset where training on mislabeled inputs <em>that are model-consistent</em>
                 does not at all recover the decision boundary of the original model. More
@@ -323,10 +398,10 @@ a.figure-number::before {
             </p>
         </section>
 
-        <section class="response-info">
-            You can find more responses in the main <a href="/2019/advex-bugs-responses/">discussion
-                article</a>.
-        </section>
+        <div class="comment-info">
+    You can find more responses in the <a href="/2019/advex-bugs-discussion/"> main discussion article</a>.
+</div>
+
 
     </d-article>
 
